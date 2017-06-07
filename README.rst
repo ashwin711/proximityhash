@@ -56,7 +56,7 @@ $ proximityhash 48.858156 2.294776 1000 7
 
 $ proximityhash 48.858156 2.294776 2000 7 --georaptor true
 
-.. image:: https://raw.github.com/ashwin711/proximityhash/images/proximityhash_georaptor.png
+.. image:: https://raw.github.com/ashwin711/proximityhash/master/images/proximityhash_georaptor.png
    :width: 480
    :height: 320
 
@@ -64,7 +64,7 @@ $ proximityhash 48.858156 2.294776 2000 7 --georaptor true
 
 $ proximityhash 48.858156 2.294776 2000 7 --georaptor true --minlevel 3 --maxlevel 6
 
-.. image:: https://raw.github.com/ashwin711/proximityhash/images/proximityhash_georaptor_limited.png
+.. image:: https://raw.github.com/ashwin711/proximityhash/master/images/proximityhash_georaptor_limited.png
    :width: 480
    :height: 320
 
@@ -96,13 +96,14 @@ Licensed under the Apache License, Version 2.0. ::
    See the License for the specific language governing permissions and
    limitations under the License.
 
-ToDo:
------
-
-- Tests
 
 Contributors:
 -------------
 
-Ashwin Nair - [@ashwin711](http://github.com/ashwin711)
-Arjun Menon - [@arjunmenoncse](http://github.com/arjunmenoncse)
+- Ashwin Nair [https://github.com/ashwin711]
+- Arjun Menon - [http://github.com/arjunmenoncse]
+
+ToDo:
+-----
+
+- Tests
