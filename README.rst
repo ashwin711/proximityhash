@@ -52,6 +52,7 @@ $ proximityhash 48.858156 2.294776 1000 7
    :width: 480
    :height: 320
 
+
 ::
 
 $ proximityhash 48.858156 2.294776 2000 7 --georaptor true
@@ -59,6 +60,7 @@ $ proximityhash 48.858156 2.294776 2000 7 --georaptor true
 .. image:: https://raw.github.com/ashwin711/proximityhash/master/images/proximityhash_georaptor.png
    :width: 480
    :height: 320
+
 
 ::
 
@@ -101,7 +103,7 @@ Contributors:
 -------------
 
 - Ashwin Nair [https://github.com/ashwin711]
-- Arjun Menon - [http://github.com/arjunmenoncse]
+- Arjun Menon - [http://github.com/arjunmenon92]
 
 ToDo:
 -----
