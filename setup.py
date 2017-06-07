@@ -25,7 +25,8 @@ setup(
   install_requires = [
 	'clint',
 	'argparse',
-    'georaptor'
+    'georaptor',
+    'geohash'
   ],
   entry_points='''
 	[console_scripts]
