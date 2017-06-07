@@ -1,4 +1,4 @@
-import geohash
+import Geohash
 import georaptor
 import math
 import time
@@ -80,7 +80,7 @@ def create_geohash(latitude, longitude, radius, precision, georaptor_flag=False,
 
 
     for point in points:
-        geohashes += [geohash.encode(point[0], point[1], precision)]
+        geohashes += [Geohash.encode(point[0], point[1], precision)]
 
     if georaptor_flag:
         georaptor_out = georaptor.compress(set(geohashes), int(minlevel), int(maxlevel))
