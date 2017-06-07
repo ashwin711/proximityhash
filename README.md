@@ -1,2 +1,0 @@
-# proximityhash
-Geohashes in proximity
