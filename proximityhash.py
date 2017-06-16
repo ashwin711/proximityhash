@@ -100,7 +100,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('latitude', help='latitude of the center point')
     parser.add_argument('longitude', help='longitude of the center point')
-    parser.add_argument('radius', help='radius of coverage')
+    parser.add_argument('radius', help='radius of coverage in metres')
     parser.add_argument('precision_level', help='geohash precision level')
     parser.add_argument('--georaptor', default=False,
                         help='georaptor flag to compress the output (default: false)')

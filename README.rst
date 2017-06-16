@@ -32,7 +32,7 @@ $ proximityhash -h
   positional arguments:
       latitude              latitude of the center point
       longitude             longitude of the center point
-      radius                radius of coverage
+      radius                radius of coverage in metres
       precision_level       geohash precision level
 
   optional arguments:
