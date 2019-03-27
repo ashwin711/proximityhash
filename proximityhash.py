@@ -83,7 +83,7 @@ def create_geohash(latitude, longitude, radius, precision, georaptor_flag=False,
         geohashes += [Geohash.encode(point[0], point[1], precision)]
 
     if georaptor_flag:
-        georaptor_out = georaptor.compress(geohashes, int(minlevel), int(maxlevel))
+        georaptor_out = georaptor.compress(set(geohashes), int(minlevel), int(maxlevel))
         if __name__ != '__main__':
             return georaptor_out
         return ','.join(georaptor_out)
