@@ -30,9 +30,9 @@ class latlon_convert_test_case(unittest.TestCase):
 class create_geohash_test_case(unittest.TestCase):
     """Tests for `create_geohash`."""
     def test_create_geohash(self):
-        expected = 'tdnu20t9,tdnu20t8,tdnu20t3,tdnu20t2,tdnu20mz,tdnu20mx,tdnu20tc,tdnu20tb,tdnu20td,tdnu20tf'
+        expected = ['tdnu20t9','tdnu20t8','tdnu20t3','tdnu20t2','tdnu20mz','tdnu20mx','tdnu20tc','tdnu20tb','tdnu20td','tdnu20tf']
         output = proximityhash.create_geohash(12.0, 77.0, 20.0, 8, georaptor_flag=False, minlevel=1, maxlevel=12)
-        self.assertEqual(output, expected)
+        self.assertTrue(set(expected) == output)
 
 
 if __name__ == '__main__':
