@@ -8,6 +8,7 @@ repositories {
 
 dependencies {
     implementation 'org.elasticsearch:elasticsearch:6.3.0'
+    implementation 'org.projectlombok:lombok:1.18.8'
 
     testImplementation "org.junit.jupiter:junit-jupiter:5.4.0"
 }
