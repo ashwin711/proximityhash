@@ -1,0 +1,13 @@
+plugins {
+    id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+}    
+
+dependencies {
+    implementation 'org.elasticsearch:elasticsearch:6.3.0'
+
+    testImplementation "org.junit.jupiter:junit-jupiter:5.4.0"
+}
