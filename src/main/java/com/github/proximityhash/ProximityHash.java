@@ -15,6 +15,13 @@ import java.util.*;
  */
 public class ProximityHash {
 
+    /*
+     * Adding meters to lat-long isn't 100% accurate (and it gets worse closer to the poles).
+     * Thus our step size needs to be smaller than the length/height of geohashes in order to hit all of them.
+     * This number can be tuned depending on where on earth you are hashing and the precision of the hashes.
+     */
+    private static final double MAGIC_NUMBER = 0.7;
+
     /**
      * Checks if the closest point on any side of the georectangle is within the radius.
      *
@@ -128,8 +135,8 @@ public class ProximityHash {
         Set<String> fullMatchHashes = new HashSet<>();
         Set<String> partialMatchHashes = new HashSet<>();
 
-        long latStepSize = (long) Math.floor(GeoUtils.geoHashCellHeight(precision));
-        long lngStepSize = (long) Math.floor(GeoUtils.geoHashCellWidth(precision));
+        long latStepSize = (long) (Math.floor(GeoUtils.geoHashCellHeight(precision)) * MAGIC_NUMBER);
+        long lngStepSize = (long) (Math.floor(GeoUtils.geoHashCellWidth(precision)) * MAGIC_NUMBER);
 
         long latSteps = (long) Math.ceil(radius / latStepSize) + 1;
         long lngSteps = (long) Math.ceil(radius / lngStepSize) + 1;
