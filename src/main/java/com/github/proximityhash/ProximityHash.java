@@ -106,11 +106,85 @@ public class ProximityHash {
 //    }
 
 
+    // ################# Pinched Google lib code #################
+    // source: https://github.com/googlemaps/android-maps-utils
 
+    /**
+     * Returns the distance between two GeoPoints, in meters.
+     */
+    private static double computeDistanceBetween(GeoPoint from, GeoPoint to) {
+        return SloppyMath.haversinMeters(from.getLat(), from.lon(), to.getLat(), to.getLon());
+    }
+
+    /**
+     * Computes the distance on the sphere between the point p and the line segment start to end.
+     *
+     * @param p the point to be measured
+     * @param start the beginning of the line segment
+     * @param end the end of the line segment
+     * @return the distance in meters (assuming spherical earth)
+     */
+    public static double distanceToLine(final GeoPoint p, final GeoPoint start, final GeoPoint end) {
+        if (start.equals(end)) {
+            return computeDistanceBetween(end, p);
+        }
+
+        final double s0lat = SloppyMath.toRadians(p.getLat());
+        final double s0lng = SloppyMath.toRadians(p.getLon());
+        final double s1lat = SloppyMath.toRadians(start.getLat());
+        final double s1lng = SloppyMath.toRadians(start.getLon());
+        final double s2lat = SloppyMath.toRadians(end.getLat());
+        final double s2lng = SloppyMath.toRadians(end.getLon());
+
+        double s2s1lat = s2lat - s1lat;
+        double s2s1lng = s2lng - s1lng;
+        final double u = ((s0lat - s1lat) * s2s1lat + (s0lng - s1lng) * s2s1lng)
+                / (s2s1lat * s2s1lat + s2s1lng * s2s1lng);
+        if (u <= 0) {
+            return computeDistanceBetween(p, start);
+        }
+        if (u >= 1) {
+            return computeDistanceBetween(p, end);
+        }
+        GeoPoint sa = new GeoPoint(p.getLat() - start.getLat(), p.getLon() - start.getLon());
+        GeoPoint sb = new GeoPoint(u * (end.getLat() - start.getLat()), u * (end.getLon() - start.getLon()));
+        return computeDistanceBetween(sa, sb);
+    }
 
 
     // ################# NEW CODE BELOW THIS LINE #################
 
+    /**
+     * Checks if the closest point on any side of the georectangle is within the radius.
+     *
+     * This is for the case where the rectangle touches the radius, but no corner of the rectangle is within the radius.
+     */
+    private static boolean checkCircleIntersectsRectangleGeometrically(double radius, GeoPoint center,
+                                                                       Rectangle geoRect, String geohash,
+                                                                       Set<String> partiallyWithinRadius) {
+        GeoPoint nw = new GeoPoint(geoRect.maxLat, geoRect.minLon);
+        GeoPoint ne = new GeoPoint(geoRect.maxLat, geoRect.maxLon);
+        GeoPoint se = new GeoPoint(geoRect.minLat, geoRect.maxLon);
+        GeoPoint sw = new GeoPoint(geoRect.minLat, geoRect.minLon);
+
+        if (radius >= distanceToLine(center, nw, ne) ||
+                radius >= distanceToLine(center, sw, se) ||
+                radius >= distanceToLine(center, sw, nw) ||
+                radius >= distanceToLine(center, se, ne)) {
+
+            partiallyWithinRadius.add(geohash);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Covers the cases where at least one corner of an intersected geo hash rectangle is within the circle.
+     *
+     * It is useful to consider these as a separate case because the math is much simpler.
+     */
     private static boolean checkInsideRadiusUsingSimpleMath(double radius, GeoPoint startingPoint,
                                                             Rectangle geohashRectangle, String geohash,
                                                             Set<String> fullyWithinRadius,
@@ -147,13 +221,6 @@ public class ProximityHash {
         return false;
     }
 
-    private static boolean checkCircleIntersectsRectangleGeometry(double radius, GeoPoint center,
-                                                                  Rectangle geohashRectangle, String geohash,
-                                                                  Set<String> fullyWithinRadius,
-                                                                  Set<String> partiallyWithinRadius) {
-        return false; //TODO implement this.
-    }
-
     private static boolean isGeohashInsideRadius(double radius, GeoPoint startingPoint, GeoPoint point,
                                                  Set<String> fullyWithinRadius, Set<String> partiallyWithinRadius,
                                                  int precision) {
@@ -170,7 +237,8 @@ public class ProximityHash {
             return true;
         }
 
-        return false;
+        return checkCircleIntersectsRectangleGeometrically(radius, startingPoint, geohashRectangle, geohash,
+                partiallyWithinRadius);
     }
 
     /**
@@ -220,6 +288,19 @@ public class ProximityHash {
     }
 
     /**
+     * The radius can be so small that is doesn't even intersect a side of the parent geohash rectangle.
+     * However, we still want to return that rectangle as a partial match.
+     */
+    private static void makeSureStartingPointHashIsInTheResult(Set<String> fullyWithinRadius, Set<String> partiallyWithinRadius,
+                                                    GeoPoint startingPoint, int precision) {
+        if (fullyWithinRadius.size() < 1 && partiallyWithinRadius.size() < 1) {
+            partiallyWithinRadius.add(
+                    GeoHashUtils.stringEncode(startingPoint.getLon(), startingPoint.getLat(), precision)
+            );
+        }
+    }
+
+    /**
      * Generates all geohashes within the given radius of the given point (including the one the point is located in).
      *
      * @param startingPoint The center point of the circle within which geohashes will be returned.
@@ -245,18 +326,13 @@ public class ProximityHash {
         while (!pointQueue.isEmpty()){
             GeoPointPlus curPoint = pointQueue.remove();
 
-            System.out.println(
-                    "ptQ len: " + pointQueue.size() +
-                    ", x:" + curPoint.getCoordinatePair().getX() +
-                    ", y: " + curPoint.getCoordinatePair().getY() +
-                    ", rad: " + radius);
-
-
             if (isGeohashInsideRadius(radius, startingPoint, curPoint.getGeoPoint(), fullMatchHashes,
                     partialMatchHashes, precision)) {
                 pointQueue.addAll(getSiblings(curPoint, lngStepSize, latStepSize, touchedCoord));
             }
         }
+
+        makeSureStartingPointHashIsInTheResult(fullMatchHashes, partialMatchHashes, startingPoint, precision);
 
         return new ProximityHashResult(fullMatchHashes, partialMatchHashes);
     }
