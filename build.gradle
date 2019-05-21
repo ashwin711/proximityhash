@@ -7,7 +7,14 @@ repositories {
 }    
 
 dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
+
     implementation 'org.elasticsearch:elasticsearch:6.3.0'
 
     testImplementation "org.junit.jupiter:junit-jupiter:5.4.0"
+}
+
+test {
+    useJUnitPlatform()
 }
