@@ -7,7 +7,7 @@ import org.elasticsearch.common.geo.GeoUtils;
 /**
  * Math utility functions for ProximityHash.
  */
-public class MathUtils {
+class MathUtils {
 
     /**
      * Returns the distance between two GeoPoints, in meters.
@@ -26,7 +26,7 @@ public class MathUtils {
      * @param end the end of the line segment
      * @return the distance in meters (assuming spherical earth)
      */
-    public static double distanceToLine(final GeoPoint p, final GeoPoint start, final GeoPoint end) {
+    static double distanceToLine(final GeoPoint p, final GeoPoint start, final GeoPoint end) {
         if (start.equals(end)) {
             return computeDistanceBetween(end, p);
         }
@@ -54,6 +54,21 @@ public class MathUtils {
     }
 
     /**
+     * Note that there is no function to handle crossing the poles because this library doesn't work near them anyways.
+     *
+     * This doesn't work if the meridian is crossed by more than 360 degrees, but that will never happen in ProximityHash.
+     */
+    static double handleCrossingPrimeMeridian(double longitude){
+        if (longitude > 180.0 || longitude < -180.0) {
+            int sign = Integer.signum((int) longitude);
+
+            return ((longitude * sign) - 360.0) * sign;
+        }
+
+        return longitude;
+    }
+
+    /**
      * Adds a number of meters to the latitude and the longitude of a Geopoint.
      * Addition is done on a sphere the size of Earth.
      *
@@ -62,12 +77,15 @@ public class MathUtils {
      * @param deltaX The distance (in meters) to add to the longitude.
      * @return A Geopoint.
      */
-    public static GeoPoint addToGeopoint(GeoPoint point, double deltaY, double deltaX) {
+    static GeoPoint addToGeopoint(GeoPoint point, double deltaY, double deltaX) {
         double latDiff = (deltaY / GeoUtils.EARTH_MEAN_RADIUS) * (180 / Math.PI);
         double lngDiff = ((deltaX / GeoUtils.EARTH_MEAN_RADIUS) * (180 / Math.PI)) /
                 Math.cos(point.getLat() * (Math.PI / 180));
 
-        return new GeoPoint(point.getLat() + latDiff, point.getLon() + lngDiff);
+        return new GeoPoint(
+                point.getLat() + latDiff,
+                handleCrossingPrimeMeridian(point.getLon() + lngDiff)
+        );
     }
 
 }
