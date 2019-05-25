@@ -123,13 +123,14 @@ public class ProximityHash {
     }
 
     /**
-     * Finds all geohashes within the given radius of the given point (including the one the point is located in).
+     * Finds all geohashes within the given radius of the given point.
      *
      * @param startingPoint The center point of the circle within which geohashes will be returned.
      *                      A latitude, longitude pair.
      * @param radius The radius (in meters) within which to return geohashes.
      * @param precision The precision of the geohashes to be returned (see geohash specification for details).
-     * @return A list of all geohash strings.
+     * @return One set of all geohashes which lie fully within the radius and a second set of those which lie partially
+     *         within it.
      */
     public static ProximityHashResult findGeohashesWithinRadius(GeoPoint startingPoint, double radius, int precision) {
         Set<String> fullMatchHashes = new HashSet<>();

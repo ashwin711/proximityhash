@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.Set;
 
 /**
- * Results from proximity hash.
+ * Results from {@link com.github.proximityhash.ProximityHash#findGeohashesWithinRadius(GeoPoint, double, int)}.
  */
 @Getter
 public class ProximityHashResult {
