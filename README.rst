@@ -102,3 +102,7 @@ Contributors:
 
 - Ashwin Nair [https://github.com/ashwin711]
 - Arjun Menon - [http://github.com/arjunmenon92]
+
+Other Language Ports:
+- go: [https://github.com/echoface/proximityhash]
+
