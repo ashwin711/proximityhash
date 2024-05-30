@@ -53,22 +53,32 @@ def create_geohash(latitude, longitude, radius, precision, georaptor_flag=False,
 
     height = (grid_height[precision - 1])/2
     width = (grid_width[precision-1])/2
+    
+    if (latitude > 60 or latitude < -60):
+        height = (grid_height[precision - 1])/8
+        width = (grid_width[precision-1])/8
+   
+    if (latitude > 82 or latitude < -82):
+        height = (grid_height[precision - 1])/32
+        width = (grid_width[precision-1])/32
+    
+    if (latitude > 89 or latitude < -89):
+        height = (grid_height[precision - 1])/256
+        width = (grid_width[precision-1])/256
 
     lat_moves = int(math.ceil(radius / height)) #4
     lon_moves = int(math.ceil(radius / width)) #2
-
+    
     for i in range(0, lat_moves):
 
         temp_lat = y + height*i
 
         for j in range(0,lon_moves):
-
+           
             temp_lon = x + width*j
-
+            
             if in_circle_check(temp_lat, temp_lon, y, x, radius):
-
                 x_cen, y_cen = get_centroid(temp_lat, temp_lon, height, width)
-
                 lat, lon = convert_to_latlon(y_cen, x_cen, latitude, longitude)
                 points += [[lat, lon]]
                 lat, lon = convert_to_latlon(-y_cen, x_cen, latitude, longitude)
@@ -77,7 +87,8 @@ def create_geohash(latitude, longitude, radius, precision, georaptor_flag=False,
                 points += [[lat, lon]]
                 lat, lon = convert_to_latlon(-y_cen, -x_cen, latitude, longitude)
                 points += [[lat, lon]]
-
+                
+    #print("Points: "+ str(points))
 
     for point in points:
         geohashes += [Geohash.encode(point[0], point[1], precision)]
@@ -145,3 +156,7 @@ def main():
     et = time.time() - start_time
 
     puts(colored.green('\nTotal execution time: ' + str(et) + ' seconds\n'))
+
+
+if __name__ == "__main__":
+    main()

@@ -1,6 +1,3 @@
-.. image:: http://donatecoins.org/btc/1HeMeMU2qUFDRZpRQMJ2v27Dw3h3gShJ5b.svg
-   :target: http://donatecoins.org/btc/1HeMeMU2qUFDRZpRQMJ2v27Dw3h3gShJ5b
-
 ProximityHash: Geohashes in Proximity (with the option of compression using Georaptor_)
 =======================================================================================
 
