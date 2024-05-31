@@ -4,7 +4,7 @@ import setuptools
 setup(
   name = 'proximityhash',
   py_modules = ['proximityhash'],
-  version = '3.0.0',
+  version = '3.0.1',
   description = 'Geohashes in proximity',
   long_description = open('README.rst').read(),
   author = 'Ashwin Nair',
@@ -26,7 +26,7 @@ setup(
 	'clint',
 	'argparse',
     'georaptor>=3.0.0',
-    'Geohash'
+    'geohash2'
   ],
   entry_points='''
 	[console_scripts]

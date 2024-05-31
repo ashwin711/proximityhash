@@ -1,4 +1,4 @@
-import Geohash
+import geohash2
 import georaptor
 import math
 import time
@@ -40,7 +40,7 @@ def convert_to_latlon(y, x, latitude, longitude):
     return (final_lat, final_lon)
 
 
-def create_geohash(latitude, longitude, radius, precision, georaptor_flag=False, minlevel=1, maxlevel=12):
+def create_geohash(latitude, longitude, radius, level, georaptor_flag=False, minlevel=1, maxlevel=12):
 
     x = 0.0
     y = 0.0
@@ -51,20 +51,20 @@ def create_geohash(latitude, longitude, radius, precision, georaptor_flag=False,
     grid_width = [5009400.0, 1252300.0, 156500.0, 39100.0, 4900.0, 1200.0, 152.9, 38.2, 4.8, 1.2, 0.149, 0.0370]
     grid_height = [4992600.0, 624100.0, 156000.0, 19500.0, 4900.0, 609.4, 152.4, 19.0, 4.8, 0.595, 0.149, 0.0199]
 
-    height = (grid_height[precision - 1])/2
-    width = (grid_width[precision-1])/2
+    height = (grid_height[level - 1])/2
+    width = (grid_width[level-1])/2
     
     if (latitude > 60 or latitude < -60):
-        height = (grid_height[precision - 1])/8
-        width = (grid_width[precision-1])/8
+        height = (grid_height[level - 1])/8
+        width = (grid_width[level - 1])/8
    
     if (latitude > 82 or latitude < -82):
-        height = (grid_height[precision - 1])/32
-        width = (grid_width[precision-1])/32
+        height = (grid_height[level - 1])/32
+        width = (grid_width[level - 1])/32
     
     if (latitude > 89 or latitude < -89):
-        height = (grid_height[precision - 1])/256
-        width = (grid_width[precision-1])/256
+        height = (grid_height[level - 1])/256
+        width = (grid_width[level - 1])/256
 
     lat_moves = int(math.ceil(radius / height)) #4
     lon_moves = int(math.ceil(radius / width)) #2
@@ -91,7 +91,7 @@ def create_geohash(latitude, longitude, radius, precision, georaptor_flag=False,
     #print("Points: "+ str(points))
 
     for point in points:
-        geohashes += [Geohash.encode(point[0], point[1], precision)]
+        geohashes += [geohash2.encode(point[0], point[1], precision=level)]
 
     if georaptor_flag:
         georaptor_out = georaptor.compress(set(geohashes), int(minlevel), int(maxlevel))
